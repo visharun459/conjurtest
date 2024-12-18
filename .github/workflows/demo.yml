@@ -23,4 +23,10 @@ jobs:
           GIT_TOKEN=$(curl -s -H "Authorization:bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value)
           # Use this token to get Conjur Token
           SESSION_TOKEN=$(curl -vv --request POST "$CONJUR_URL/authn-jwt/$CONJUR_SERVICE_ID/$CONJUR_ACCOUNT/authenticate" --header "Content-Type: application/x-www-form-urlencoded" --header "Accept-Encoding: base64" --data-urlencode "jwt=$GIT_TOKEN")
+          # Use token as required to retrieve from Conjur
+          # Each repo will have to customize
+          username=$(curl -s -H "Authorization: Token token=\"${SESSION_TOKEN}\"" "$CONJUR_URL/secrets/conjur/variable/data/vault/SmartOpsPOC/Operating System-CandA_test-test.com-gituser/username" )
+          password=$(curl -s -H "Authorization: Token token=\"${SESSION_TOKEN}\"" "$CONJUR_URL/secrets/conjur/variable/data/vault/SmartOpsPOC/Operating System-CandA_test-test.com-gituser/password" )
+          echo "$username"
+          echo "$password"
           set +x
