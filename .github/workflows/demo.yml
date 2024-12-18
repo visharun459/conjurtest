@@ -1,0 +1,24 @@
+name: Conjur Pipeline Demo
+
+# Watch Policy branch
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test-retrieval:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Authenticate and Retrieve from Conjur
+        env:
+          CONJUR_URL: ""
+          CONJUR_ACCOUNT: "conjur"
+          CONJUR_SERVICE_ID: "github"
+        run: |
+          set -x
+          echo "Retrieving JWT Token from Github"
+          GIT_TOKEN=$(curl -vv -H "Authorization:bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value)
+          set +x
